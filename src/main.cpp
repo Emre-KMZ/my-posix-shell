@@ -4,6 +4,9 @@
 #include <sstream>
 #include "CommandManager.hpp"
 
+
+CommandManager globalCommandManager; 
+
 int main() {
   // flush after every std::cout / std:cerr
   std::cout << std::unitbuf;
@@ -12,7 +15,6 @@ int main() {
   std::string input, arg, command;
   std::vector<std::string> args;
   int exitCode;
-  CommandManager commandManager;
 
   while (true) {
     std::cout << "$ ";
@@ -28,7 +30,7 @@ int main() {
       args.push_back(arg);
     }
 
-    exitCode = commandManager.executeCommand(command, args);
+    exitCode = globalCommandManager.executeCommand(command, args);
     if (command == "exit") {
       return exitCode;
     }
