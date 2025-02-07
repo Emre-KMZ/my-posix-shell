@@ -1,0 +1,18 @@
+#include "CommandManager.hpp"
+#include "commands/ExitCommand.hpp"
+#include "commands/EchoCommand.hpp"
+
+CommandManager::CommandManager() {
+    // Register commands
+    commands["exit"] = std::make_unique<ExitCommand>();
+    commands["echo"] = std::make_unique<EchoCommand>();
+}
+
+int CommandManager::executeCommand(const std::string& command, const std::vector<std::string>& args) {
+    auto it = commands.find(command);
+    if (it != commands.end()) {
+        return it->second->execute(args);
+    }
+    std::cerr << command << ": command not found" << std::endl;
+    return -1;
+}
