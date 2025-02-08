@@ -4,6 +4,7 @@
 #include "commands/ExitCommand.hpp"
 #include "commands/EchoCommand.hpp"
 #include "commands/TypeCommand.hpp"
+#include "commands/PwdCommand.hpp"
 
 std::string CommandManager::ProgramLookup(std::string command){
     std::istringstream ss(std::getenv("PATH"));
@@ -24,6 +25,7 @@ CommandManager::CommandManager() {
     commands["exit"] = std::make_unique<ExitCommand>();
     commands["echo"] = std::make_unique<EchoCommand>();
     commands["type"] = std::make_unique<TypeCommand>();
+    commands["pwd"] = std::make_unique<PwdCommand>();
 }
 
 int CommandManager::executeCommand(const std::string& command, const std::vector<std::string>& args) {
@@ -37,7 +39,7 @@ int CommandManager::executeCommand(const std::string& command, const std::vector
     
     if (commandPath != "") {
         pid_t pid = fork();
-        if (pid == 0) {
+        if (pid == 0) { // child
             char* argv[args.size() + 2];
             argv[0] = (char*)commandPath.c_str();
             for (size_t i = 0; i < args.size(); i++) {
@@ -48,7 +50,7 @@ int CommandManager::executeCommand(const std::string& command, const std::vector
             std::cerr << command << ": command not found" << std::endl;
             return -1;
         }
-        waitpid(pid, NULL, 0);
+        waitpid(pid, NULL, 0); // wait for child to finish
         return 0;
     }
 
