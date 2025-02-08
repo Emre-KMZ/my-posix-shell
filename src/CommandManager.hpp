@@ -14,4 +14,5 @@ public:
     CommandManager();
     int executeCommand(const std::string& command, const std::vector<std::string>& args);
     bool commandExists(const std::string& command);
+    std::string ProgramLookup(std::string command);
 };
