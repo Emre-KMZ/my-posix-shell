@@ -13,7 +13,7 @@ int main() {
   std::cout << std::unitbuf;
   std::cerr << std::unitbuf;
 
-  std::string input, arg, command;
+  std::string input, arg;
   std::vector<std::string> args;
   int exitCode;
 
@@ -28,13 +28,12 @@ int main() {
     std::istringstream ss(input);
 
     // parse input into command and arguments
-    ss >> command;
     while (ss >> arg) {
       args.push_back(arg);
     }
 
-    exitCode = globalCommandManager.executeCommand(command, args);
-    if (command == "exit") {
+    exitCode = globalCommandManager.executeCommand(args);
+    if (args[0] == "exit") {
       return exitCode;
     }
     

@@ -4,22 +4,18 @@
 extern CommandManager globalCommandManager;
 
 int TypeCommand::execute(const std::vector<std::string>& args) {
-    // for now, we just have 2 types; invalid and built-in
-    std::string command = args[0];
-    // std::string programPath;
-    for (auto arg : args) {
-        bool isBuiltIn = globalCommandManager.commandExists(arg);
+    for (size_t i = 1; i < args.size(); i++) {
+        bool isBuiltIn = globalCommandManager.commandExists(args[i]);
         if (isBuiltIn) {
-            std::cout << arg << " is a built-in command.\n";
+            std::cout << args[i] << " is a built-in command.\n";
         }
-        else if(globalCommandManager.ProgramLookup(arg).size() != 0) {
-            std::string programPath = globalCommandManager.ProgramLookup(arg);
-            std::cout << arg << " is " << programPath << "\n";
+        else if(globalCommandManager.ProgramLookup(args[i]).size() != 0) {
+            std::string programPath = globalCommandManager.ProgramLookup(args[i]);
+            std::cout << args[i] << " is " << programPath << "\n";
         }
         else {
-            std::cout << arg << " not found.\n";
+            std::cout << args[i] << " not found.\n";
         }
     }
-
     return 0;
 }

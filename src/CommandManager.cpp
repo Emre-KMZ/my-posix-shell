@@ -29,7 +29,9 @@ CommandManager::CommandManager() {
     commands["cd"] = std::make_unique<CdCommand>();
 }
 
-int CommandManager::executeCommand(const std::string& command, const std::vector<std::string>& args) {
+int CommandManager::executeCommand(const std::vector<std::string>& args) {
+    std::string command = args[0];
+
     // built-ins
     auto it = commands.find(command);
     if (it != commands.end()) {
@@ -41,18 +43,20 @@ int CommandManager::executeCommand(const std::string& command, const std::vector
     if (commandPath != "") {
         pid_t pid = fork();
         if (pid == 0) { // child
-            char* argv[args.size() + 2];
-            argv[0] = (char*)commandPath.c_str();
+            char** argv = new char*[args.size() + 1];
             for (size_t i = 0; i < args.size(); i++) {
-                argv[i + 1] = (char*)args[i].c_str();
+                argv[i] = const_cast<char*>(args[i].c_str());
             }
-            argv[args.size() + 1] = NULL;
+            argv[args.size()] = nullptr;
             execv(commandPath.c_str(), argv);
+            delete[] argv;
             std::cerr << command << ": command not found" << std::endl;
             return -1;
+        } else {
+            int status;
+            waitpid(pid, &status, 0);
+            return WEXITSTATUS(status);
         }
-        waitpid(pid, NULL, 0); // wait for child to finish
-        return 0;
     }
 
     std::cerr << command << ": command not found" << std::endl;

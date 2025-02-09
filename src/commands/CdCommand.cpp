@@ -11,7 +11,7 @@ int CdCommand::execute(const std::vector<std::string>& args) {
             return -1;
         }
     } else {
-        fs::path path(args[0]);
+        fs::path path(args[1]);
         if (path.is_relative()) {
             path = fs::current_path() / path; 
         } else if (std::string(path)[0] == '~') {
