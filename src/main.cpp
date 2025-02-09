@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include "CommandManager.hpp"
+#include <filesystem>
 
 
 CommandManager globalCommandManager; 
@@ -17,6 +18,8 @@ int main() {
   int exitCode;
 
   while (true) {
+    std::string currentPath = std::filesystem::current_path().string();
+    std::cout << currentPath.substr(currentPath.find_last_of("/") + 1) << " "; // only print current directory
     std::cout << "$ ";
     std::getline(std::cin, input);
     
