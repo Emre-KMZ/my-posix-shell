@@ -5,13 +5,13 @@
 #include "commands/EchoCommand.hpp"
 #include "commands/TypeCommand.hpp"
 #include "commands/PwdCommand.hpp"
+#include "commands/CdCommand.hpp"
 
 std::string CommandManager::ProgramLookup(std::string command){
     std::istringstream ss(std::getenv("PATH"));
-    std::string path;
-    while (std::getline(ss, path, ':')) {
-        // const char* commandPath = strcat((strcat((char*)path.c_str(), (char*)"/")), (char*)command.c_str());
-        std::string commandPath = path + "/" + command;
+    std::string pathStr;
+    while (std::getline(ss, pathStr, ':')) {
+        std::filesystem::path commandPath = (std::filesystem::path)pathStr / command; // append command to path
 
         if (std::filesystem::exists(commandPath)) {
             return commandPath;   
@@ -26,6 +26,7 @@ CommandManager::CommandManager() {
     commands["echo"] = std::make_unique<EchoCommand>();
     commands["type"] = std::make_unique<TypeCommand>();
     commands["pwd"] = std::make_unique<PwdCommand>();
+    commands["cd"] = std::make_unique<CdCommand>();
 }
 
 int CommandManager::executeCommand(const std::string& command, const std::vector<std::string>& args) {
