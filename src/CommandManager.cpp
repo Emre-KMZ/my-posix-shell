@@ -7,13 +7,20 @@
 #include "commands/PwdCommand.hpp"
 #include "commands/CdCommand.hpp"
 
+namespace fs = std::filesystem;
+
 std::string CommandManager::ProgramLookup(std::string command){
     std::istringstream ss(std::getenv("PATH"));
+    
+    if (fs::path(command).is_relative() && fs::exists(fs::current_path() / command)) {
+        return fs::current_path() / command;
+    }
+
     std::string pathStr;
     while (std::getline(ss, pathStr, ':')) {
-        std::filesystem::path commandPath = (std::filesystem::path)pathStr / command; // append command to path
+        fs::path commandPath = (fs::path)pathStr / command; // append command to path
 
-        if (std::filesystem::exists(commandPath)) {
+        if (fs::exists(commandPath)) {
             return commandPath;   
         }
     }
